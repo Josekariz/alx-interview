@@ -1,79 +1,44 @@
 #!/usr/bin/python3
 """
-Define island_perimeter function that finds the perimeter
-of an island in a body of water
+Define isWineer function, a solution to the Prime Game problem
 """
 
-bound_4 = set()
-bound_3 = set()
-bound_2 = set()
-bound_1 = set()
 
-
-def boundary(grid, i, j):
-    """Find cells with either 4, 3, 2 or 1 exposed boundary and add them to
-       appropriate set
+def primes(n):
+    """Return list of prime numbers between 1 and n inclusive
        Args:
-           grid (list): 2d list
-           i (int): row number
-           j (int): column number
+        n (int): upper boundary of range. lower boundary is always 1
     """
-    boundaries = 0
-    try:
-        if i == 0:
-            boundaries += 1
-        elif grid[i-1][j] == 0:
-            boundaries += 1
-    except:
-        boundaries += 1
-    try:
-        if grid[i+1][j] == 0:
-            boundaries += 1
-    except:
-        boundaries += 1
-    try:
-        if grid[i][j+1] == 0:
-            boundaries += 1
-    except:
-        boundaries += 1
-    try:
-        if j == 0:
-            boundaries += 1
-        elif grid[i][j-1] == 0:
-            boundaries += 1
-    except:
-        boundaries += 1
-
-    if boundaries == 1:
-        bound_1.add((i, j))
-    elif boundaries == 2:
-        bound_2.add((i, j))
-    elif boundaries == 3:
-        bound_3.add((i, j))
-    elif boundaries == 4:
-        bound_4.add((i, j))
+    prime = []
+    sieve = [True] * (n + 1)
+    for p in range(2, n + 1):
+        if (sieve[p]):
+            prime.append(p)
+            for i in range(p, n + 1, p):
+                sieve[i] = False
+    return prime
 
 
-def island_perimeter(grid):
+def isWinner(x, nums):
     """
-    Calculate and return perimeter of island in the grid
-    Grid is a rectangular grid where 0s represent water and 1s represent land
-    Each cell is a square with a side length of 1
-    There is only one island
+    Determines winner of Prime Game
     Args:
-        grid [list] : 2d list of ints either 0 or 1
+        x (int): no. of rounds of game
+        nums (int): upper limit of range for each round
     Return:
-       perimeter of island
+        Name of winner (Maria or Ben) or None if winner cannot be found
     """
-    if grid == []:
-        return 0
-    l = len(grid)
-    w = len(grid[0])
-    for i in range(l):
-        for j in range(w):
-            if grid[i][j] == 1:
-                boundary(grid, i, j)
-                if len(bound_4) != 0:
-                    return 4
-    perimeter = (len(bound_3) * 3) + (len(bound_2) * 2) + (len(bound_1))
-    return perimeter
+    if x is None or nums is None or x == 0 or nums == []:
+        return None
+    Maria = Ben = 0
+    for i in range(x):
+        prime = primes(nums[i])
+        if len(prime) % 2 == 0:
+            Ben += 1
+        else:
+            Maria += 1
+    if Maria > Ben:
+        return 'Maria'
+    elif Ben > Maria:
+        return 'Ben'
+    return None
